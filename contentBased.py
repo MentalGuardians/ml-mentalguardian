@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
@@ -9,11 +8,7 @@ data = pd.read_csv('vid_youtube.csv')
 data = data.reset_index(drop=True)
 data = data.dropna(subset=['Labels', 'Likes', 'Views']).reset_index(drop=True)
 
-stop_words = set(nltk.corpus.stopwords.words('english'))
-
-stemmer = nltk.stem.PorterStemmer()
-data['stemmed_labels'] = data['Labels'].apply(lambda x: ' '.join([stemmer.stem(word.lower()) for word in nltk.word_tokenize(x) if word.lower() not in stop_words]))
-data['labels_and_views'] = data['stemmed_labels'] + ' ' + data['Views'].astype(str)
+data['labels_and_views'] = data['Labels'] + ' ' + data['Views'].astype(str)
 
 vectorizer = TfidfVectorizer()
 lc_matrix = vectorizer.fit_transform(data['labels_and_views'])
